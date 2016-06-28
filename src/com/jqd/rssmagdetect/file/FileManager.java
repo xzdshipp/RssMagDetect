@@ -1,0 +1,123 @@
+package com.jqd.rssmagdetect.file;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import android.os.Environment;
+import android.view.Gravity;
+import android.widget.Toast;
+
+import com.jqd.rssmagdetect.model.SensorsDataManager;
+import com.jqd.rssmagdetect.model.WiFiDataManager;
+import com.jqd.rssmagdetect.ui.MainActivity;
+import com.jqd.rssmagdetect.util.GlobalPara;
+
+/**
+ * @author jiangqideng@163.com
+ * @date 2016-6-28 下午3:51:19
+ * @description 采集好的数据的存储
+ */
+public class FileManager {
+	/**
+	 * 这个函数每次存两个文件，"dataRssi_at_1" 和 "dataBssid.txt"
+	 * dataRssi_at_1存的是rssi和传感器数据，每个时刻的一组数据包括n个AP的rssi和15个传感器的数值，依次添加进去。
+	 * dataBssid存的是Wifi热点一些信息，顺序和上面的对应 注意：如果已存在该文件，这个函数创建的新的文件会覆盖之前的。（
+	 * APP第一次开启获取的BSSID顺序和关闭APP再开启进行采集得到的BSSID顺序是不一样的）
+	 * 但是app的逻辑是只有改变位置后，存储在内存的数据才清零，所以同一位置的多次存储并无影响。
+	 */
+	public void saveData() {
+		saveRssiAndSensors(); // 存数据
+		saveWifiBssids(); // 存wifi的bssid
+	}
+
+	private void saveRssiAndSensors() {
+		try {
+			File sdCard = Environment.getExternalStorageDirectory();
+			File directory = new File(sdCard.getAbsolutePath()
+					+ "/CIPS-DataCollect");
+			directory.mkdirs();
+			File file = new File(directory, "dataRssi_at_"
+					+ GlobalPara.getInstance().position_index + ".txt");
+			FileOutputStream fOut = new FileOutputStream(file);
+			OutputStream fos = fOut;
+			DataOutputStream dos = new DataOutputStream(fos);
+			for (int i = 0; i < WiFiDataManager.getInstance().dataCount; i++) {
+				// 存wifi的Rssi数据
+				for (int j = 0; j < WiFiDataManager.getInstance().dataBssid
+						.size(); j++) {
+					if (WiFiDataManager.getInstance().dataRssi.get(j)
+							.containsKey(i)) {
+						dos.writeInt(WiFiDataManager.getInstance().dataRssi
+								.get(j).get(i));
+					} else {
+						dos.writeInt(0); // 没有的话就存0
+					}
+				}
+				// 存传感器数据，rss后面增加15个int
+				SensorsDataManager sdm = SensorsDataManager.getInstance();
+				dos.writeInt(sdm.dataMagnetic.get(0).get(i));
+				dos.writeInt(sdm.dataMagnetic.get(1).get(i));
+				dos.writeInt(sdm.dataMagnetic.get(2).get(i));
+				dos.writeInt(sdm.dataOrientation.get(0).get(i));
+				dos.writeInt(sdm.dataOrientation.get(1).get(i));
+				dos.writeInt(sdm.dataOrientation.get(2).get(i));
+				dos.writeInt(sdm.dataAccelerate.get(0).get(i));
+				dos.writeInt(sdm.dataAccelerate.get(1).get(i));
+				dos.writeInt(sdm.dataAccelerate.get(2).get(i));
+				dos.writeInt(sdm.dataGyroscope.get(0).get(i));
+				dos.writeInt(sdm.dataGyroscope.get(1).get(i));
+				dos.writeInt(sdm.dataGyroscope.get(2).get(i));
+				dos.writeInt(sdm.dataGravity.get(0).get(i));
+				dos.writeInt(sdm.dataGravity.get(1).get(i));
+				dos.writeInt(sdm.dataGravity.get(2).get(i));
+			}
+			dos.close();
+			
+			Toast toast = Toast.makeText(WiFiDataManager.getInstance().activity,
+					"存储至“/CIPS-DataCollect”", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		} catch (FileNotFoundException e) {
+			Toast.makeText(WiFiDataManager.getInstance().activity, "存储失败。",
+					Toast.LENGTH_SHORT).show();
+			return;
+		} catch (IOException e) {
+			Toast.makeText(WiFiDataManager.getInstance().activity, "存储失败。",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+	}
+
+	private void saveWifiBssids() {
+		try {
+			File sdCard = Environment.getExternalStorageDirectory();
+			File directory = new File(sdCard.getAbsolutePath()
+					+ "/CIPS-DataCollect");
+			directory.mkdirs();
+			File file = new File(directory, "dataBssid.txt");
+			FileOutputStream fOut = new FileOutputStream(file);
+			OutputStream fos = fOut;
+			DataOutputStream dos = new DataOutputStream(fos);
+			for (String bssid : WiFiDataManager.getInstance().dataBssid
+					.keySet()) {
+				int j = WiFiDataManager.getInstance().dataBssid.get(bssid);
+				String tempString = j + 1 + "  BSSID: ";
+				dos.write(tempString.getBytes());
+				dos.write(bssid.getBytes());
+				dos.write("  SSID:".getBytes());
+				dos.write(WiFiDataManager.getInstance().dataWifiNames.get(j)
+						.getBytes());
+				dos.write("\n".getBytes());
+			}
+			dos.close();
+		} catch (FileNotFoundException e) {
+			return;
+		} catch (IOException e) {
+			return;
+		}
+	}
+}
