@@ -35,16 +35,11 @@ public class SensorsDataManager {
 	private float[] temp_g = new float[3];
 	private float[] temp_gra = new float[3];
 
-	public ArrayList<ArrayList<Integer>> dataMagnetic = new ArrayList<ArrayList<Integer>>(
-			3);
-	public ArrayList<ArrayList<Integer>> dataOrientation = new ArrayList<ArrayList<Integer>>(
-			3);
-	public ArrayList<ArrayList<Integer>> dataAccelerate = new ArrayList<ArrayList<Integer>>(
-			3);
-	public ArrayList<ArrayList<Integer>> dataGyroscope = new ArrayList<ArrayList<Integer>>(
-			3);
-	public ArrayList<ArrayList<Integer>> dataGravity = new ArrayList<ArrayList<Integer>>(
-			3);
+	public ArrayList<ArrayList<Integer>> dataMagnetic = new ArrayList<ArrayList<Integer>>(3);
+	public ArrayList<ArrayList<Integer>> dataOrientation = new ArrayList<ArrayList<Integer>>(3);
+	public ArrayList<ArrayList<Integer>> dataAccelerate = new ArrayList<ArrayList<Integer>>(3);
+	public ArrayList<ArrayList<Integer>> dataGyroscope = new ArrayList<ArrayList<Integer>>(3);
+	public ArrayList<ArrayList<Integer>> dataGravity = new ArrayList<ArrayList<Integer>>(3);
 
 	private volatile static SensorsDataManager sensorsDataManager = null;
 
