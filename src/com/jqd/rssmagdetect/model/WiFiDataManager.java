@@ -77,7 +77,8 @@ public class WiFiDataManager {
 		public void onReceive(Context context, Intent intent) {
 			scanResults = wifiManager.getScanResults();
 			if (scanResults != null) {
-				WiFiListAdapter adapter = new WiFiListAdapter(activity, scanResults);
+				WiFiListAdapter adapter = new WiFiListAdapter(activity,
+						scanResults);
 				activity.listView.setAdapter(adapter);
 			}
 			// 更新热点列表，只增不减，顺序不变，同时将RSSI记录下来
@@ -95,13 +96,13 @@ public class WiFiDataManager {
 			}
 			dataCount++;
 
-			// while (GlobalPara.getInstance().timeSinceStart -
-			// GlobalPara.getInstance().timeOfStartScan < 1) {
-			// // 等待，可以用来控制时间，暂时不控制，1 * 10ms, 正常的手机wifi扫描一次大约得一秒了
-			// }
-			// timeOfStartScan = timeSinceStart;
+			while (GlobalPara.getInstance().timeSinceStart
+					- GlobalPara.getInstance().timeOfStartScan < 50) {
+				// 等待，可以用来控制时间，，1 * 10ms, 正常的手机wifi扫描一次大约得一秒了
+			}
+			GlobalPara.getInstance().timeOfStartScan = GlobalPara.getInstance().timeSinceStart;
 
-			// 收到后开始下一次扫描，控制一下时间，每秒一次
+			// 收到后开始下一次扫描，控制一下时间，每秒最多两次
 			wifiManager.startScan();
 			activity.toggleButton.setText("关闭RSS数据采集" + "("
 					+ String.valueOf(dataCount) + ")");
@@ -109,9 +110,9 @@ public class WiFiDataManager {
 	};
 
 	public void endCollecting(MainActivity activity) {
-		activity.unregisterReceiver(cycleWifiReceiver); //取消监听
-		SensorsDataManager.getInstance().updateSensorsData(); //保持传感器和wifi数据的个数同步
-		//然后存储数据到文件
+		activity.unregisterReceiver(cycleWifiReceiver); // 取消监听
+		SensorsDataManager.getInstance().updateSensorsData(); // 保持传感器和wifi数据的个数同步
+		// 然后存储数据到文件
 		new FileManager().saveData();
 
 	}

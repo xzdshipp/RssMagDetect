@@ -83,12 +83,11 @@ public class SensorsDataManager {
 
 	private void dataInit() {
 		for (int i = 0; i < 3; i++) {
-			ArrayList<Integer> tmp = new ArrayList<Integer>();
-			dataMagnetic.add(tmp);
-			dataOrientation.add(tmp);
-			dataAccelerate.add(tmp);
-			dataGyroscope.add(tmp);
-			dataGravity.add(tmp);
+			dataMagnetic.add(new ArrayList<Integer>());
+			dataOrientation.add(new ArrayList<Integer>());
+			dataAccelerate.add(new ArrayList<Integer>());
+			dataGyroscope.add(new ArrayList<Integer>());
+			dataGravity.add(new ArrayList<Integer>());
 		}
 	}
 

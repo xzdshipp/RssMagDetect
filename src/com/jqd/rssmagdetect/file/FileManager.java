@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.jqd.rssmagdetect.model.SensorsDataManager;
 import com.jqd.rssmagdetect.model.WiFiDataManager;
-import com.jqd.rssmagdetect.ui.MainActivity;
 import com.jqd.rssmagdetect.util.GlobalPara;
 
 /**
@@ -51,33 +50,36 @@ public class FileManager {
 						.size(); j++) {
 					if (WiFiDataManager.getInstance().dataRssi.get(j)
 							.containsKey(i)) {
-						dos.writeInt(WiFiDataManager.getInstance().dataRssi
-								.get(j).get(i));
+						dos.write((WiFiDataManager.getInstance().dataRssi
+								.get(j).get(i) + "\t").getBytes());
 					} else {
-						dos.writeInt(0); // 没有的话就存0
+						dos.write((0 + "\t").getBytes()); // 没有的话就存0
 					}
 				}
 				// 存传感器数据，rss后面增加15个int
 				SensorsDataManager sdm = SensorsDataManager.getInstance();
-				dos.writeInt(sdm.dataMagnetic.get(0).get(i));
-				dos.writeInt(sdm.dataMagnetic.get(1).get(i));
-				dos.writeInt(sdm.dataMagnetic.get(2).get(i));
-				dos.writeInt(sdm.dataOrientation.get(0).get(i));
-				dos.writeInt(sdm.dataOrientation.get(1).get(i));
-				dos.writeInt(sdm.dataOrientation.get(2).get(i));
-				dos.writeInt(sdm.dataAccelerate.get(0).get(i));
-				dos.writeInt(sdm.dataAccelerate.get(1).get(i));
-				dos.writeInt(sdm.dataAccelerate.get(2).get(i));
-				dos.writeInt(sdm.dataGyroscope.get(0).get(i));
-				dos.writeInt(sdm.dataGyroscope.get(1).get(i));
-				dos.writeInt(sdm.dataGyroscope.get(2).get(i));
-				dos.writeInt(sdm.dataGravity.get(0).get(i));
-				dos.writeInt(sdm.dataGravity.get(1).get(i));
-				dos.writeInt(sdm.dataGravity.get(2).get(i));
+				String outString = sdm.dataMagnetic.get(0).get(i) + "\t"
+						+ sdm.dataMagnetic.get(1).get(i) + "\t"
+						+ sdm.dataMagnetic.get(2).get(i) + "\t"
+						+ sdm.dataOrientation.get(0).get(i) + "\t"
+						+ sdm.dataOrientation.get(1).get(i) + "\t"
+						+ sdm.dataOrientation.get(2).get(i) + "\t"
+						+ sdm.dataAccelerate.get(0).get(i) + "\t"
+						+ sdm.dataAccelerate.get(1).get(i) + "\t"
+						+ sdm.dataAccelerate.get(2).get(i) + "\t"
+						+ sdm.dataGyroscope.get(0).get(i) + "\t"
+						+ sdm.dataGyroscope.get(1).get(i) + "\t"
+						+ sdm.dataGyroscope.get(2).get(i) + "\t"
+						+ sdm.dataGravity.get(0).get(i) + "\t"
+						+ sdm.dataGravity.get(1).get(i) + "\t"
+						+ sdm.dataGravity.get(2).get(i) + "\n";
+				System.out.println(outString);
+				dos.write(outString.getBytes());
 			}
 			dos.close();
-			
-			Toast toast = Toast.makeText(WiFiDataManager.getInstance().activity,
+
+			Toast toast = Toast.makeText(
+					WiFiDataManager.getInstance().activity,
 					"存储至“/CIPS-DataCollect”", Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
@@ -102,16 +104,19 @@ public class FileManager {
 			FileOutputStream fOut = new FileOutputStream(file);
 			OutputStream fos = fOut;
 			DataOutputStream dos = new DataOutputStream(fos);
+
+			String[] tmpOutString = new String[WiFiDataManager.getInstance().dataBssid
+					.size()];
 			for (String bssid : WiFiDataManager.getInstance().dataBssid
 					.keySet()) {
 				int j = WiFiDataManager.getInstance().dataBssid.get(bssid);
-				String tempString = j + 1 + "  BSSID: ";
-				dos.write(tempString.getBytes());
-				dos.write(bssid.getBytes());
-				dos.write("  SSID:".getBytes());
-				dos.write(WiFiDataManager.getInstance().dataWifiNames.get(j)
-						.getBytes());
-				dos.write("\n".getBytes());
+				String jString = j + 1 + "\tBSSID:\t" + bssid + "\tSSID:\t"
+						+ WiFiDataManager.getInstance().dataWifiNames.get(j)
+						+ "\n";
+				tmpOutString[j] = jString;
+			}
+			for (int i = 0; i < tmpOutString.length; i++) {
+				dos.write(tmpOutString[i].getBytes());
 			}
 			dos.close();
 		} catch (FileNotFoundException e) {
