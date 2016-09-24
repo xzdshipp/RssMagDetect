@@ -95,9 +95,9 @@ public class SensorsDataManager {
 		for (int i = 0; i < dataMagnetic.size(); i++) {
 			dataMagnetic.get(i).clear();
 			dataOrientation.get(i).clear();
-			dataOrientation.get(i).clear();
-			dataOrientation.get(i).clear();
-			dataOrientation.get(i).clear();
+			dataAccelerate.get(i).clear();
+			dataGyroscope.get(i).clear();
+			dataGravity.get(i).clear();
 		}
 	}
 
