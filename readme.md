@@ -2,7 +2,7 @@
 
 ###简介
 一个Android小工具，用来记录wifi信号强度，同时记录磁场等传感器测得的数据，主要用来为室内定位建立位置指纹库。
-(https://raw.githubusercontent.com/jiangqideng/resources/master/device-2014-12-07-164903.png)
+![](https://raw.githubusercontent.com/jiangqideng/resources/master/device-2014-12-07-164903.png)
 
 ###使用说明
 
