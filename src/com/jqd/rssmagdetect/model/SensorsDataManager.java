@@ -146,7 +146,7 @@ public class SensorsDataManager {
 			temp_m[2] = event.values[2];
 			// 在这里显示一下地磁数据试试
 			MainActivity.dataTextView.setText("地磁数据: " + temp_m[0] + " "
-					+ temp_m[1] + " " + temp_m[0]);
+					+ temp_m[1] + " " + temp_m[2]);
 			updateSensorsData();
 		}
 
